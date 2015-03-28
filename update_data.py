@@ -5,6 +5,7 @@ import calendar
 import time
 import requests
 import json
+from django.shortcuts import get_object_or_404
 
 data_streams = ['raw:com.google.weight:com.google.android.apps.fitness:user_input',
         'raw:com.google.height:com.google.android.apps.fitness:user_input',
@@ -12,8 +13,14 @@ data_streams = ['raw:com.google.weight:com.google.android.apps.fitness:user_inpu
         'derived:com.google.distance.delta:com.google.android.gms:pruned_distance'
         ]
 dataset_url = 'https://www.googleapis.com/fitness/v1/users/me/dataSources/'
-hbs = HealthyBee.objects.all()
-for hb in hbs:
+
+def updateData():
+    hbs = HealthyBee.objects.all()
+    for hb in hbs:
+        updateDataForBee(hb.pk)
+
+def updateDataForBee(bee_id):
+    hb = get_object_or_404(HealthyBee, pk=bee_id)
     print hb.email
     hba = HealthyBeeAuth.objects.filter(bee=hb).first()
     if hba is None:
@@ -60,5 +67,5 @@ for hb in hbs:
     for stream in data_streams:
         _dataset_url = dataset_url + stream + '/datasets/' + dataset
         get_data(_dataset_url, _headers)
-
-#    url =
+    
+    #    url =

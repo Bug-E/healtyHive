@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponse
 from core.models import HealthyBee, HealthyBeeAuth
 
@@ -40,4 +40,6 @@ def getResponse(request):
         hba.token = access_token
         hba.refresh_token = refresh_token
     hba.save()
-    return HttpResponse('Yay')
+    from update_data import updateDataForBee
+    updateDataForBee(hba.bee.pk)
+    return HttpResponse('Yay! Now you can see your health report and compete in the HealthyHive.')

@@ -10,15 +10,19 @@ class HealthyBeeAuth(models.Model):
     token = models.CharField(max_length=200)
     refresh_token = models.CharField(max_length=200, null=True)
 
-class HealthyHive(models.Model):
-	name = models.CharField(max_length=200)
-
 class HealthData(models.Model):
     bee = models.ForeignKey('core.HealthyBee', null=True)
     startTime = models.IntegerField(null=True)
     endTime = models.IntegerField(null=True)
     dataTypeName = models.CharField(max_length=256, null=True)
     originalDataSourceId = models.CharField(max_length=256, null=True)
-    intVal = models.IntegerField(null=True)
+    intVal = models.IntegerField(null=False, default=0)
     modifiedTime = models.IntegerField(null=True)
+    
+class HealthCoupon(models.Model):
+    name = models.CharField(max_length=256)
+
+class BeeCoupons(models.Model):
+    bee = models.ForeignKey('core.HealthyBee')
+    coupon = models.ForeignKey('core.HealthCoupon')
 
