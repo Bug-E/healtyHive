@@ -15,7 +15,7 @@ def getRequestUrl(bee_id):
     url = 'https://accounts.google.com/o/oauth2/auth?scope=' + scope +   '&redirect_uri=' + redirect_uri + '&response_type=code&client_id=' +    client_id +    '&approval_prompt=force&include_granted_scopes=true&access_type=offline'
     bee = get_object_or_404(HealthyBee, pk=bee_id)
     url = url + '&state=' + bee.email
-    return HttpResponse(url)
+    return url
 
 def getResponse(request):
     email = request.GET['state']
@@ -40,4 +40,4 @@ def getResponse(request):
         hba.token = access_token
         hba.refresh_token = refresh_token
     hba.save()
-    return HttpResponse('Yay!!')
+    return HttpResponse('Yay')

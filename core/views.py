@@ -25,7 +25,7 @@ def getAuthorizationUrl(request):
 	if request.GET.get('bee_id') is None:
 		return HttpResponseBadRequest('missing param: bee_id')
 	url = getRequestUrl(request.GET['bee_id'])
-	return HttpResponse(url)
+	return HttpResponse(json.dumps({'url':url}))
 
 def isAuthorized(request):
 	if request.method != 'GET':
@@ -43,30 +43,37 @@ def isAuthorized(request):
 def getAggregatedHealthData(request):
 	if request.method != 'GET':
 		return HttpResponseBadRequest('Invalid request method. Must be GET')
+	bee_id = request.GET.get('bee_id')
 	dataType = request.GET.get('datatype')
 	startTime = request.GET.get('starttime')
-	endTime = request.GET.get('endTime')
-	if dataType is None or startTime is None or endTime is None:
-		return HttpResponseBadRequest('Invalid parameters. must contain datatype, starttime, endtime')
+	endTime = request.GET.get('endtime')
+	if dataType is None or startTime is None or endTime is None or bee_id is None:
+		return HttpResponseBadRequest('Invalid parameters. must contain datatype, starttime, endtime, bee_id')
+	bee = get_object_or_404(HealthyBee, pk=bee_id)
+	startTime = int(startTime)
+	endTime = int(endTime)
 	if dataType not in AVAILABLE_HEALTH_DATA_TYPES:
 		return HttpResponseBadRequest('Invalid datattype')
-	hds = HealthData.objects.filter(dataTypeName=dataType).filter(startTime_gte=startTime).filter(endTime_lte=endTime)
+	hds = HealthData.objects.filter(dataTypeName=dataType, bee=bee).filter(startTime__gte=startTime).filter(endTime__lte=endTime)
+	print hds.query
 	if dataType in ['com.google.weight', 'com.google.height']:
 		hd = hds.last()
 		if hd is None:
 			return HttpResponse()
 		else:
 			return HttpResponse(json.dumps({'value':hd.intVal}))
-	val = hds.annotate(Sum('intVal'))
+	val = hds.aggregate(val=Sum('intVal'))['val']
+	val = 0 if val is None else val
 	return HttpResponse(json.dumps({'value':val}))
 
 def getAllData(request):
 	if request.method != 'GET':
 		return HttpResponseBadRequest('Invalid request method. Must be GET')
+	bee_id = request.GET.get('bee_id')
 	dataType = request.GET.get('datatype')
 	startTime = request.GET.get('starttime')
 	endTime = request.GET.get('endTime')
-	if dataType is None or startTime is None or endTime is None:
+	if dataType is None or startTime is None or endTime is None or bee_id is None:
 		return HttpResponseBadRequest('Invalid parameters. must contain datatype, starttime, endtime')
 	if dataType not in AVAILABLE_HEALTH_DATA_TYPES:
 		return HttpResponseBadRequest('Invalid datattype')
