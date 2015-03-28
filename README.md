@@ -24,6 +24,9 @@ GET http://stag-sentry-sourabh-sesmic.practodev.com/core/isauthorized?bee_id=2
 ```
 
 ## Get authorization url
+
+Open the obtained url in browser for giving your account's health api read access to the app.
+
 ```
 GET http://stag-sentry-sourabh-sesmic.practodev.com/core/authorizationurl?bee_id=2
 ```
