@@ -19,6 +19,13 @@ def addUser(request):
 	hb.save()
 	return HttpResponse(json.dumps(HealthyBeeSerializer(hb).data))
 
+def listUsers(request):
+	hbs = HealthyBee.objects.all()
+	res = []
+	for hb in hbs:
+		res.append(HealthyBeeSerializer(hb).data)
+	return HttpResponse(json.dumps(res))
+
 def getAuthorizationUrl(request):
 	if request.method != 'GET':
 		return HttpResponseBadRequest('Invalid Method')

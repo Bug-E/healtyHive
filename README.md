@@ -38,7 +38,7 @@ GET http://stag-sentry-sourabh-sesmic.practodev.com/core/authorizationurl?bee_id
 
 ## DATA APIs
 
-### data types 
+### data types
 - 'com.google.weight'
 - 'com.google.height'
 - 'com.google.step_count.delta'
@@ -81,6 +81,15 @@ http://stag-sentry-sourabh-sesmic.practodev.com/core/aggregatehealthdata?bee_id=
 ### Response ###
 ```
 {"value": 2876}
+```
+
+## List Users ##
+```
+GET http://stag-sentry-sourabh-sesmic.practodev.com/core/listusers
+```
+```
+[{"pk": 1, "name": "Dheeraj", "email": "dheeru.agarwal@gmail.com"}, {"pk": 2,
+"name": "Aditya", "email": "aditya.subramanyam@practo.com"}]
 ```
 
 
